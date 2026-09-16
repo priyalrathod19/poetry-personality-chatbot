@@ -2,7 +2,7 @@ import streamlit as st
 from groq import Groq
 
 # ---------- Page setup ----------
-st.set_page_config(page_title="Muse — The Poetic Chatbot", page_icon="🪶", layout="centered")
+st.set_page_config(page_title="Muse — The Poetic Chatbot", page_icon="\u2712\ufe0f", layout="centered")
 
 # ---------- Custom styling: Ink & Paper ----------
 st.markdown("""
@@ -59,7 +59,7 @@ textarea, input {
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🪶 Muse")
+st.title("\u2712\ufe0f Muse")
 st.markdown('<p class="subtitle">turn thoughts into poetry</p>', unsafe_allow_html=True)
 
 # ---------- Setup ----------
@@ -95,10 +95,10 @@ user_input = st.chat_input("Tell Muse what's on your mind...")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user", avatar="🧑"):
+    with st.chat_message("user", avatar = "\u2712\ufe0f" if msg["role"] == "assistant" else "\U0001F9D1"):
         st.markdown(f'<div class="user-bubble">{user_input}</div>', unsafe_allow_html=True)
 
-    with st.chat_message("assistant", avatar="🪶"):
+    with st.chat_message("assistant", avatar="\u2712\ufe0f"):
         placeholder = st.empty()
         full_response = ""
         try:
