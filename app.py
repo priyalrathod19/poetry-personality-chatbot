@@ -92,38 +92,42 @@ Rules:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-for msg in st.session_state.messages:
-    if msg["role"] == "user":
-        with st.chat_message("user", avatar="\U0001F9D1"):
-            st.markdown(f'<div class="user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
-    else:
-        with st.chat_message("assistant", avatar="\u2712\ufe0f"):
-            st.markdown(f'<div class="poem-text">{msg["content"]}</div>', unsafe_allow_html=True)
+chat_box = st.container(height=450)
 
+with chat_box:
+    for msg in st.session_state.messages:
+        if msg["role"] == "user":
+            with st.chat_message("user", avatar="\U0001F9D1"):
+                st.markdown(f'<div class="user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+        else:
+            with st.chat_message("assistant", avatar="\u2712\ufe0f"):
+                st.markdown(f'<div class="poem-text">{msg["content"]}</div>', unsafe_allow_html=True)
 user_input = st.chat_input("Tell Muse what's on your mind...")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user", avatar="\U0001F9D1"):
-        st.markdown(f'<div class="user-bubble">{user_input}</div>', unsafe_allow_html=True)
-
-    with st.chat_message("assistant", avatar="\u2712\ufe0f"):
-        placeholder = st.empty()
-        full_response = ""
-        try:
-            stream = client.chat.completions.create(
-                model="openai/gpt-oss-20b",
-                messages=[{"role": "system", "content": MUSE_PERSONA_PROMPT}] +
-                         [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-                stream=True,
-            )
-            for chunk in stream:
-                delta = chunk.choices[0].delta.content or ""
-                full_response += delta
-                placeholder.markdown(f'<div class="poem-text">{full_response}\u258c</div>', unsafe_allow_html=True)
-            placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
-        except Exception:
-            full_response = "The muse grows quiet, spent and still,\nGive me a moment, then speak your will."
-            placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
-
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+    with chat_box:
+    
+        with st.chat_message("user", avatar="\U0001F9D1"):
+            st.markdown(f'<div class="user-bubble">{user_input}</div>', unsafe_allow_html=True)
+    
+        with st.chat_message("assistant", avatar="\u2712\ufe0f"):
+            placeholder = st.empty()
+            full_response = ""
+            try:
+                stream = client.chat.completions.create(
+                    model="openai/gpt-oss-20b",
+                    messages=[{"role": "system", "content": MUSE_PERSONA_PROMPT}] +
+                             [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
+                    stream=True,
+                )
+                for chunk in stream:
+                    delta = chunk.choices[0].delta.content or ""
+                    full_response += delta
+                    placeholder.markdown(f'<div class="poem-text">{full_response}\u258c</div>', unsafe_allow_html=True)
+                placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
+            except Exception:
+                full_response = "The muse grows quiet, spent and still,\nGive me a moment, then speak your will."
+                placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
+    
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
