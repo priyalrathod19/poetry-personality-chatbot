@@ -25,6 +25,19 @@ h1 {
     margin-top: -12px;
 }
 
+[data-testid="stAppViewContainer"] > .main .block-container {
+    padding-top: 1rem;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    background-color: #f4efe4;
+    z-index: 999;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd4bf;
+}
+
 [data-testid="stChatMessage"] {
     background-color: transparent;
     border-radius: 2px;
@@ -55,8 +68,12 @@ textarea, input {
 </style>
 """, unsafe_allow_html=True)
 
-st.title("\u2712\ufe0f Muse")
-st.markdown('<p class="subtitle">turn thoughts into poetry</p>', unsafe_allow_html=True)
+st.markdown("""
+<div class="sticky-header">
+    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 0;">\u2712\ufe0f Muse</h1>
+    <p class="subtitle">turn thoughts into poetry</p>
+</div>
+""", unsafe_allow_html=True)
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
