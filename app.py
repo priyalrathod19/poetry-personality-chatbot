@@ -1,10 +1,8 @@
 import streamlit as st
 from groq import Groq
 
-# ---------- Page setup ----------
-st.set_page_config(page_title="Muse — The Poetic Chatbot", page_icon="\u2712\ufe0f", layout="centered")
+st.set_page_config(page_title="Muse - The Poetic Chatbot", page_icon="\u2712\ufe0f", layout="centered")
 
-# ---------- Custom styling: Ink & Paper ----------
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Caveat:wght@500&display=swap');
@@ -33,7 +31,6 @@ h1 {
     padding: 4px 0;
 }
 
-/* User's own message bubble */
 .user-bubble {
     background-color: #e8e1d0;
     border-radius: 2px;
@@ -42,7 +39,6 @@ h1 {
     color: #1a1a1a;
 }
 
-/* Muse's poem, styled like a quoted verse, not a chat bubble */
 .poem-text {
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.4rem;
@@ -62,7 +58,6 @@ textarea, input {
 st.title("\u2712\ufe0f Muse")
 st.markdown('<p class="subtitle">turn thoughts into poetry</p>', unsafe_allow_html=True)
 
-# ---------- Setup ----------
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 MUSE_PERSONA_PROMPT = """
@@ -77,25 +72,22 @@ Rules:
   imagery, angry -> stormy but never cruel imagery).
 """
 
-# ---------- Conversation memory ----------
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# ---------- Render past messages ----------
 for msg in st.session_state.messages:
     if msg["role"] == "user":
-        with st.chat_message("user", avatar="🧑"):
+        with st.chat_message("user", avatar="\U0001F9D1"):
             st.markdown(f'<div class="user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
     else:
-        with st.chat_message("assistant", avatar="🪶"):
+        with st.chat_message("assistant", avatar="\u2712\ufe0f"):
             st.markdown(f'<div class="poem-text">{msg["content"]}</div>', unsafe_allow_html=True)
 
-# ---------- Chat input ----------
 user_input = st.chat_input("Tell Muse what's on your mind...")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
-    with st.chat_message("user", avatar = "\u2712\ufe0f" if msg["role"] == "assistant" else "\U0001F9D1"):
+    with st.chat_message("user", avatar="\U0001F9D1"):
         st.markdown(f'<div class="user-bubble">{user_input}</div>', unsafe_allow_html=True)
 
     with st.chat_message("assistant", avatar="\u2712\ufe0f"):
@@ -111,7 +103,7 @@ if user_input:
             for chunk in stream:
                 delta = chunk.choices[0].delta.content or ""
                 full_response += delta
-                placeholder.markdown(f'<div class="poem-text">{full_response}▌</div>', unsafe_allow_html=True)
+                placeholder.markdown(f'<div class="poem-text">{full_response}\u258c</div>', unsafe_allow_html=True)
             placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
         except Exception:
             full_response = "The muse grows quiet, spent and still,\nGive me a moment, then speak your will."
