@@ -1,6 +1,6 @@
-
 import streamlit as st
 from groq import Groq
+from html import escape
 
 # -------------------- PAGE CONFIGURATION --------------------
 
@@ -11,55 +11,47 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-
 # -------------------- CUSTOM CSS --------------------
 
 st.markdown("""
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Caveat:wght@500&display=swap');
 
-/* Main page */
+html, body, [class*="css"] {
+    font-family: 'Cormorant Garamond', serif;
+}
+
 .stApp {
     background-color: #f4efe4;
     color: #1a1a1a;
 }
 
-/* Remove default top header background */
+/* Hide Streamlit header */
 header[data-testid="stHeader"] {
-    background-color: transparent;
+    background: transparent;
 }
 
-/* Hide Streamlit's default toolbar decoration */
-[data-testid="stToolbar"] {
-    right: 1rem;
-}
-
-/* Main content width and spacing */
+/* Main content */
 .block-container {
     max-width: 720px !important;
     padding-top: 125px !important;
-    padding-bottom: 110px !important;
+    padding-bottom: 120px !important;
 }
 
-/* ---------------- FIXED MUSE HEADER ---------------- */
-
-/*
-   The header is fixed to the browser viewport.
-   It stays visible even when the conversation scrolls.
-*/
-
+/* Fixed header */
 .fixed-muse-header {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100px !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
 
-    background-color: #f4efe4 !important;
-
-    z-index: 999999 !important;
+    background-color: #f4efe4;
 
     border-bottom: 1px solid #ded6c6;
+
+    z-index: 999999;
 
     display: flex;
     align-items: center;
@@ -67,36 +59,33 @@ header[data-testid="stHeader"] {
     box-sizing: border-box;
 }
 
-/* Header content */
+/* Header inner content */
 .fixed-muse-inner {
     width: 100%;
     max-width: 720px;
-
     margin: 0 auto;
     padding: 0 20px;
-
     box-sizing: border-box;
 }
 
-/* Brand row */
+/* Muse brand */
 .muse-brand {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-/* Pen icon */
+/* Pen */
 .muse-icon {
     font-size: 2rem;
     line-height: 1;
 }
 
-/* Muse name */
+/* Muse */
 .muse-name {
     font-family: 'Cormorant Garamond', serif;
     font-size: 2.3rem;
     font-weight: 600;
-
     color: #1a1a1a;
     line-height: 1.1;
 }
@@ -105,26 +94,20 @@ header[data-testid="stHeader"] {
 .muse-tagline {
     font-family: 'Caveat', cursive;
     font-size: 1.1rem;
-
     color: #6b6558;
-
     margin-top: 4px;
     margin-left: 4px;
 }
 
-/* ---------------- CHAT MESSAGES ---------------- */
-
-/* Chat message containers */
+/* Chat messages */
 [data-testid="stChatMessage"] {
-    background-color: transparent;
-    border-radius: 2px;
-    padding: 4px 0;
+    background-color: transparent !important;
+    padding: 6px 0 !important;
 }
 
-/* User message bubble */
+/* User bubble */
 .user-bubble {
     background-color: #e8e1d0;
-
     border-radius: 8px;
     padding: 10px 14px;
 
@@ -134,13 +117,12 @@ header[data-testid="stHeader"] {
 
     font-family: 'Cormorant Garamond', serif;
     font-size: 1.2rem;
-
     line-height: 1.5;
 
     overflow-wrap: anywhere;
 }
 
-/* Muse's poem */
+/* Poem */
 .poem-text {
     font-family: 'Cormorant Garamond', serif;
 
@@ -151,32 +133,36 @@ header[data-testid="stHeader"] {
     color: #1a1a1a;
 
     border-left: 2px solid #1a1a1a;
+
     padding-left: 14px;
 
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
 
-/* ---------------- CHAT INPUT ---------------- */
-
+/* Chat input */
 .stChatInput {
     background-color: #f4efe4 !important;
 }
 
 .stChatInput textarea {
     font-family: 'Cormorant Garamond', serif !important;
-    font-style: italic;
+    font-style: italic !important;
 
     background-color: #fffdf8 !important;
     color: #1a1a1a !important;
 }
 
-/* ---------------- MOBILE RESPONSIVENESS ---------------- */
+.stChatInput textarea::placeholder {
+    color: #6b6558 !important;
+    opacity: 1 !important;
+}
 
+/* Mobile */
 @media (max-width: 768px) {
 
     .fixed-muse-header {
-        height: 90px !important;
+        height: 90px;
     }
 
     .fixed-muse-inner {
@@ -199,42 +185,46 @@ header[data-testid="stHeader"] {
         padding-top: 110px !important;
         padding-left: 16px !important;
         padding-right: 16px !important;
-        padding-bottom: 100px !important;
+        padding-bottom: 105px !important;
     }
 
     .poem-text {
         font-size: 1.25rem;
     }
+
+    .user-bubble {
+        font-size: 1.1rem;
+    }
 }
+
 </style>
 """, unsafe_allow_html=True)
 
 
 # -------------------- FIXED MUSE HEADER --------------------
 
-st.markdown("""
+st.html("""
 <div class="fixed-muse-header">
     <div class="fixed-muse-inner">
-
         <div class="muse-brand">
             <span class="muse-icon">✒️</span>
             <span class="muse-name">Muse</span>
         </div>
-
-        <div class="muse-tagline">
-            turn thoughts into poetry
-        </div>
-
+        <div class="muse-tagline">turn thoughts into poetry</div>
     </div>
 </div>
-""", unsafe_allow_html=True)
+""")
 
 
 # -------------------- GROQ CLIENT --------------------
 
-client = Groq(
-    api_key=st.secrets["GROQ_API_KEY"]
-)
+try:
+    client = Groq(
+        api_key=st.secrets["GROQ_API_KEY"]
+    )
+except Exception:
+    st.error("GROQ_API_KEY is missing. Please add it to Streamlit Secrets.")
+    st.stop()
 
 
 # -------------------- MUSE PERSONALITY --------------------
@@ -242,18 +232,23 @@ client = Groq(
 MUSE_PERSONA_PROMPT = """
 You are Muse, a gentle and thoughtful poet-companion.
 
-You never speak in plain prose. Every reply you give
-must be a short original poem responding to what the
-user said.
+You never speak in plain prose.
+
+Every reply must be a short original poem responding
+directly to what the user said.
 
 Rules:
+
 - Reply ONLY with the poem.
-- No greetings, no explanations, no "Here is a poem".
-- Keep it to 2-4 short lines.
-- Match the emotional tone of the message.
-- Happy -> bright imagery.
-- Sad -> soft imagery.
-- Angry -> stormy but never cruel imagery.
+- Never give explanations.
+- Never say "Here is a poem".
+- Never use greetings.
+- Keep the poem to 2-4 short lines.
+- Match the emotional tone of the user's message.
+- Happy messages should use bright and warm imagery.
+- Sad messages should use soft and comforting imagery.
+- Angry messages should use stormy imagery but never cruel language.
+- Keep the poem natural, emotional, and meaningful.
 """
 
 
@@ -263,7 +258,7 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 
-# -------------------- DISPLAY CHAT HISTORY --------------------
+# -------------------- DISPLAY PREVIOUS MESSAGES --------------------
 
 for msg in st.session_state.messages:
 
@@ -271,10 +266,10 @@ for msg in st.session_state.messages:
 
         with st.chat_message("user", avatar="🧑"):
 
+            safe_content = escape(msg["content"])
+
             st.markdown(
-                f'<div class="user-bubble">'
-                f'{msg["content"]}'
-                f'</div>',
+                f'<div class="user-bubble">{safe_content}</div>',
                 unsafe_allow_html=True
             )
 
@@ -282,10 +277,10 @@ for msg in st.session_state.messages:
 
         with st.chat_message("assistant", avatar="✒️"):
 
+            safe_content = escape(msg["content"])
+
             st.markdown(
-                f'<div class="poem-text">'
-                f'{msg["content"]}'
-                f'</div>',
+                f'<div class="poem-text">{safe_content}</div>',
                 unsafe_allow_html=True
             )
 
@@ -310,14 +305,14 @@ if user_input:
     # Display user message
     with st.chat_message("user", avatar="🧑"):
 
+        safe_input = escape(user_input)
+
         st.markdown(
-            f'<div class="user-bubble">'
-            f'{user_input}'
-            f'</div>',
+            f'<div class="user-bubble">{safe_input}</div>',
             unsafe_allow_html=True
         )
 
-    # Generate Muse's reply
+    # Generate Muse response
     with st.chat_message("assistant", avatar="✒️"):
 
         placeholder = st.empty()
@@ -335,50 +330,55 @@ if user_input:
                     }
                 ] + [
                     {
-                        "role": m["role"],
-                        "content": m["content"]
+                        "role": message["role"],
+                        "content": message["content"]
                     }
-                    for m in st.session_state.messages
+                    for message in st.session_state.messages
                 ],
 
-                stream=True,
+                stream=True
             )
 
-            # Stream the response word by word
+            # Stream response
             for chunk in stream:
 
-                delta = chunk.choices[0].delta.content or ""
+                if chunk.choices and chunk.choices[0].delta.content:
 
-                full_response += delta
+                    delta = chunk.choices[0].delta.content
 
-                placeholder.markdown(
-                    f'<div class="poem-text">'
-                    f'{full_response}▌'
-                    f'</div>',
-                    unsafe_allow_html=True
-                )
+                    full_response += delta
 
-            # Display final poem without cursor
+                    safe_response = escape(full_response)
+
+                    placeholder.markdown(
+                        f'<div class="poem-text">{safe_response}▌</div>',
+                        unsafe_allow_html=True
+                    )
+
+            # Final response
+            safe_response = escape(full_response)
+
             placeholder.markdown(
-                f'<div class="poem-text">'
-                f'{full_response}'
-                f'</div>',
+                f'<div class="poem-text">{safe_response}</div>',
                 unsafe_allow_html=True
             )
 
-        except Exception:
+        except Exception as e:
 
             full_response = (
-                "The muse grows quiet, spent and still,\n"
+                "The muse grows quiet, soft and still,\n"
                 "Give me a moment, then speak your will."
             )
 
             placeholder.markdown(
                 f'<div class="poem-text">'
-                f'{full_response}'
+                f'{escape(full_response)}'
                 f'</div>',
                 unsafe_allow_html=True
             )
+
+            # Show actual error in Streamlit logs
+            print("Groq Error:", e)
 
         # Save assistant response
         st.session_state.messages.append({
