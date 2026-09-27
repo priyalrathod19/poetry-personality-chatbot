@@ -75,7 +75,7 @@ Rules:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-chat_box = st.container(height=450)
+chat_box = st.container(border=True)
 
 with chat_box:
     for msg in st.session_state.messages:
