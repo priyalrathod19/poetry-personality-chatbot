@@ -94,18 +94,69 @@ header[data-testid="stHeader"] {
         padding-right: 1rem !important;
     }
 }
+
+/* Sticky Muse header */
+.muse-header {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+
+    background-color: #f4efe4;
+
+    padding: 15px 0 18px 0;
+    margin-top: -10px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #ded6c6;
+}
+
+/* Muse title */
+.muse-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Pen icon */
+.muse-icon {
+    font-size: 2.5rem;
+}
+
+/* Muse text */
+.muse-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.1;
+}
+
+/* Tagline */
+.muse-tagline {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: #6b6558;
+    margin-top: 5px;
+    margin-left: 4px;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
 
 # -------------------- MUSE HEADER --------------------
 
-st.title("✒️ Muse")
-
-st.markdown(
-    '<p class="subtitle">turn thoughts into poetry</p>',
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="muse-header">
+    <div class="muse-brand">
+        <span class="muse-icon">✒️</span>
+        <span class="muse-name">Muse</span>
+    </div>
+    <div class="muse-tagline">
+        turn thoughts into poetry
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # -------------------- GROQ CLIENT --------------------
