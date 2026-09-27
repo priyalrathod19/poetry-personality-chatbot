@@ -25,19 +25,6 @@ h1 {
     margin-top: -12px;
 }
 
-[data-testid="stAppViewContainer"] > .main .block-container {
-    padding-top: 1rem;
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
-    background-color: #f4efe4;
-    z-index: 999;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #ddd4bf;
-}
-
 [data-testid="stChatMessage"] {
     background-color: transparent;
     border-radius: 2px;
@@ -68,12 +55,8 @@ textarea, input {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-<div class="sticky-header">
-    <h1 style="font-family: 'Cormorant Garamond', serif; margin-bottom: 0;">\u2712\ufe0f Muse</h1>
-    <p class="subtitle">turn thoughts into poetry</p>
-</div>
-""", unsafe_allow_html=True)
+st.title("\u2712\ufe0f Muse")
+st.markdown('<p class="subtitle">turn thoughts into poetry</p>', unsafe_allow_html=True)
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
@@ -102,15 +85,15 @@ with chat_box:
         else:
             with st.chat_message("assistant", avatar="\u2712\ufe0f"):
                 st.markdown(f'<div class="poem-text">{msg["content"]}</div>', unsafe_allow_html=True)
+
 user_input = st.chat_input("Tell Muse what's on your mind...")
 
 if user_input:
     st.session_state.messages.append({"role": "user", "content": user_input})
     with chat_box:
-    
         with st.chat_message("user", avatar="\U0001F9D1"):
             st.markdown(f'<div class="user-bubble">{user_input}</div>', unsafe_allow_html=True)
-    
+
         with st.chat_message("assistant", avatar="\u2712\ufe0f"):
             placeholder = st.empty()
             full_response = ""
@@ -129,5 +112,5 @@ if user_input:
             except Exception:
                 full_response = "The muse grows quiet, spent and still,\nGive me a moment, then speak your will."
                 placeholder.markdown(f'<div class="poem-text">{full_response}</div>', unsafe_allow_html=True)
-    
+
         st.session_state.messages.append({"role": "assistant", "content": full_response})
